@@ -11,7 +11,7 @@ server:
   host: 0.0.0.0
 
   # Listen to specific port
-  port: 80
+  port: 8080
 
   # Limit the amount of connections
   max_connections: 16
@@ -22,7 +22,7 @@ server:
   # API key for client authorization
   # It's used for API token via header and HTTP Basic Auth password (username
   # is not validated but required)
-  api_key: ~
+  api_key: secret
 
 upstream:
   # Proxy request to this ip address

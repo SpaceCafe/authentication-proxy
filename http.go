@@ -53,15 +53,16 @@ func HandlerAuthentication(h http.HandlerFunc) http.HandlerFunc {
 
 		// Check for header
 		if r.Header.Get("X-API-Key") == viper.GetString("server.api_key") || r.Header.Get("API-Key") == viper.GetString("server.api_key") {
+			h(w, r)
 			return
 		}
 
 		if _, password, ok := r.BasicAuth(); ok && password == viper.GetString("server.api_key") {
+			h(w, r)
 			return
 		}
 
 		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		w.WriteHeader(http.StatusUnauthorized)
-		_, _ = w.Write([]byte("Unauthorised"))
 	}
 }
