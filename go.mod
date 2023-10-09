@@ -1,4 +1,4 @@
-module main
+module github.com/SpaceCafe/authentication-proxy
 
 go 1.21
 
