@@ -1,0 +1,33 @@
+## -----------------------------------------------------------------------------
+## Authentication-Proxy configuration file
+##
+## @author     Lars Thoms <lars@thoms.io>
+## @date       2023-10-09
+## -----------------------------------------------------------------------------
+
+---
+server:
+  # Bind server to an ip address
+  host: 0.0.0.0
+
+  # Listen to specific port
+  port: 80
+
+  # Limit the amount of connections
+  max_connections: 16
+
+  # Time limit to stay in waiting queue
+  timeout: 1m
+
+  # API key for client authorization
+  # It's used for API token via header and HTTP Basic Auth password (username
+  # is not validated but required)
+  api_key: ~
+
+upstream:
+  # Proxy request to this ip address
+  host: 127.0.0.1
+
+  # Proxy request to this port
+  port: 8080
+...
