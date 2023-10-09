@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"fmt"
 	"github.com/spf13/viper"
 	"net/http"
@@ -50,16 +51,20 @@ func HandlerRateLimit(h http.HandlerFunc, max int) http.HandlerFunc {
 // HandlerAuthentication search and check API authentication headers
 func HandlerAuthentication(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		// Check for header
-		if r.Header.Get("X-API-Key") == viper.GetString("server.api_key") || r.Header.Get("API-Key") == viper.GetString("server.api_key") {
-			h(w, r)
-			return
+		_, password, ok := r.BasicAuth()
+		if !ok {
+			password = r.Header.Get("API-Key")
 		}
 
-		if _, password, ok := r.BasicAuth(); ok && password == viper.GetString("server.api_key") {
-			h(w, r)
-			return
+		if len(password) == 0 {
+			password = r.Header.Get("X-API-Key")
+		}
+
+		if len(password) > 0 {
+			if subtle.ConstantTimeCompare([]byte(password), []byte(viper.GetString("server.api_key"))) == 1 {
+				h(w, r)
+				return
+			}
 		}
 
 		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
