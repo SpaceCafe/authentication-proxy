@@ -15,7 +15,7 @@ func main() {
 	server := httpserver.NewHTTPServer(config.HTTPServer)
 	server.Engine.Use(ratelimit.New(config.RateLimit))
 	server.Engine.Use(authentication.New(config.Authentication))
-	server.Router.Any("/", handleProxy(config.GetUpstream()))
+	server.Router.Any("/*proxyPath", handleProxy(config.GetUpstream()))
 	if err := server.Start(term.FullTracking()); err != nil {
 		logger.Fatal(err)
 	}

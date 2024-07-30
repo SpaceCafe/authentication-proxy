@@ -4,11 +4,11 @@ go 1.22
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/spacecafe/gobox/gin-authentication v0.0.0-20240730061507-00c425a761b8
-	github.com/spacecafe/gobox/gin-ratelimit v0.0.0-20240730061507-00c425a761b8
-	github.com/spacecafe/gobox/httpserver v0.0.0-20240730061507-00c425a761b8
-	github.com/spacecafe/gobox/logger v0.0.0-20240730061507-00c425a761b8
-	github.com/spacecafe/gobox/terminator v0.0.0-20240730061507-00c425a761b8
+	github.com/spacecafe/gobox/gin-authentication v0.0.0-20240730080504-15770984a93c
+	github.com/spacecafe/gobox/gin-ratelimit v0.0.0-20240730080504-15770984a93c
+	github.com/spacecafe/gobox/httpserver v0.0.0-20240730080504-15770984a93c
+	github.com/spacecafe/gobox/logger v0.0.0-20240730080504-15770984a93c
+	github.com/spacecafe/gobox/terminator v0.0.0-20240730080504-15770984a93c
 	github.com/spf13/viper v1.19.0
 )
 

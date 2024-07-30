@@ -16,6 +16,7 @@ func handleProxy(upstreamURL *url.URL) gin.HandlerFunc {
 			req.Host = upstreamURL.Host
 			req.URL.Scheme = upstreamURL.Scheme
 			req.URL.Host = upstreamURL.Host
+			req.URL.Path = ctx.Param("proxyPath")
 		}
 		proxy.ServeHTTP(ctx.Writer, ctx.Request)
 	}
