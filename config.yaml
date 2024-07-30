@@ -6,28 +6,31 @@
 ## -----------------------------------------------------------------------------
 
 ---
-server:
-  # Bind server to an ip address
-  host: 0.0.0.0
+log_level:  info
 
-  # Listen to specific port
-  port: 8080
+upstream: http://127.0.0.1:8080
 
-  # Limit the amount of connections
-  max_connections: 16
-
-  # Time limit to stay in waiting queue
-  timeout: 1m
-
-  # API key for client authorization
-  # It's used for API token via header and HTTP Basic Auth password (username
-  # is not validated but required)
-  api_key: secret
-
-upstream:
-  # Proxy request to this ip address
+http_server:
   host: 127.0.0.1
+  port: 8081
+  base_path:
+  cert_file:
+  key_file:
+  read_timeout: 60s
+  read_header_timeout: 10s
 
-  # Proxy request to this port
-  port: 8080
+authentication:
+  api_keys:
+    - secret
+  header_name: "Authorization"
+  header_value_prefix: "Bearer"
+  users:
+    user: secret
+
+rate_limit:
+  max_burst_requests: 100
+  max_concurrent_requests: 10
+  request_queue_size: 50
+  burst_duration: "1m"
+  request_timeout: "30s"
 ...
