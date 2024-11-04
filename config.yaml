@@ -2,11 +2,11 @@
 ## Authentication-Proxy configuration file
 ##
 ## @author     Lars Thoms <lars@thoms.io>
-## @date       2023-10-09
+## @date       2024-11-04
 ## -----------------------------------------------------------------------------
 
 ---
-log_level:  info
+log_level: info
 
 upstream: http://127.0.0.1:8080
 
