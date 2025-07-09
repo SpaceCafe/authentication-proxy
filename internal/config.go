@@ -1,12 +1,12 @@
-package main
+package internal
 
 import (
 	"errors"
 	"flag"
 	"net/url"
 
-	authentication "github.com/spacecafe/gobox/gin-authentication"
-	ratelimit "github.com/spacecafe/gobox/gin-ratelimit"
+	"github.com/spacecafe/gobox/gin-authentication"
+	"github.com/spacecafe/gobox/gin-ratelimit"
 	"github.com/spacecafe/gobox/httpserver"
 	"github.com/spacecafe/gobox/logger"
 	"github.com/spf13/viper"
