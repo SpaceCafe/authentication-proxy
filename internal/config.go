@@ -3,7 +3,12 @@ package internal
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"net/url"
+	"os"
+	"path"
+	"regexp"
+	"strings"
 
 	"github.com/spacecafe/gobox/gin-authentication"
 	"github.com/spacecafe/gobox/gin-ratelimit"
@@ -13,7 +18,9 @@ import (
 )
 
 var (
-	ErrNoUpstream = errors.New("upstream cannot be empty")
+	ErrNoUpstream     = errors.New("upstream cannot be empty")
+	ErrAPIKeysToShort = errors.New("API keys must be at least 16 characters long")
+	RegexSplit        = regexp.MustCompile(`[,\s]+`)
 )
 
 // Config defines the essential parameters for serving this application.
@@ -26,7 +33,7 @@ type Config struct {
 	RateLimit      *ratelimit.Config      `json:"rate_limit" yaml:"rate_limit" mapstructure:"rate_limit"`
 }
 
-// NewConfig creates and returns a new Config having default values from given configuration file.
+// NewConfig creates and returns a new Config having default values from the given configuration file.
 func NewConfig() *Config {
 	config := &Config{
 		LogLevel:       "debug",
@@ -37,6 +44,10 @@ func NewConfig() *Config {
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
+
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("PROXY")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	configPath := flag.String("config", "", "Path to config.yaml")
 	flag.Parse()
@@ -50,6 +61,31 @@ func NewConfig() *Config {
 	err := viper.ReadInConfig()
 	if err != nil {
 		logger.Fatal(err)
+	}
+
+	// Load sensitive values from environment variables if available
+	if apiKeys, err := loadEnv("AUTHENTICATION_API_KEYS"); err == nil {
+		apiKeysList := RegexSplit.Split(apiKeys, -1)
+		for i, key := range apiKeysList {
+			apiKeysList[i] = strings.TrimSpace(key)
+		}
+		viper.Set("authentication.api_keys", apiKeysList)
+	} else {
+		logger.Info(err)
+	}
+
+	if users, err := loadEnv("AUTHENTICATION_USERS"); err == nil {
+		usersList := RegexSplit.Split(users, -1)
+		usersMap := make(map[string]string)
+		for _, pair := range usersList {
+			parts := strings.SplitN(strings.TrimSpace(pair), ":", 2)
+			if len(parts) == 2 {
+				usersMap[parts[0]] = parts[1]
+			}
+		}
+		viper.Set("authentication.users", usersMap)
+	} else {
+		logger.Info(err)
 	}
 
 	err = viper.Unmarshal(config)
@@ -71,21 +107,54 @@ func (r *Config) Validate() error {
 	if err = logger.ParseLevel(r.LogLevel); err != nil {
 		return err
 	}
-	if r.upstream, err = url.Parse(r.Upstream); r.Upstream == "" || err != nil {
+
+	if r.Upstream == "" {
 		return ErrNoUpstream
 	}
+	if r.upstream, err = url.Parse(r.Upstream); err != nil {
+		return err
+	}
+
 	if err = r.HTTPServer.Validate(); err != nil {
 		return err
 	}
+
 	if err = r.Authentication.Validate(); err != nil {
 		return err
 	}
+
+	// Ensure API keys have sufficient entropy
+	for _, key := range r.Authentication.APIKeys {
+		if len(key) < 16 {
+			return ErrAPIKeysToShort
+		}
+	}
+
 	if err = r.RateLimit.Validate(); err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func (r *Config) GetUpstream() *url.URL {
 	return r.upstream
+}
+
+func loadEnv(name string) (string, error) {
+	value := viper.GetString(name)
+	if value != "" {
+		return value, nil
+	}
+
+	value = viper.GetString(name + "_FILE")
+	if value == "" {
+		return "", fmt.Errorf("%s not set", name)
+	}
+	content, err := os.ReadFile(path.Clean(value))
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(string(content)), nil
 }
