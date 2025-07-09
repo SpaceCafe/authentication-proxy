@@ -4,11 +4,11 @@ go 1.24.4
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/spacecafe/gobox/gin-authentication v0.0.0-20250407082413-67d642e29ba0
-	github.com/spacecafe/gobox/gin-ratelimit v0.0.0-20250407082413-67d642e29ba0
-	github.com/spacecafe/gobox/httpserver v0.0.0-20250407082413-67d642e29ba0
-	github.com/spacecafe/gobox/logger v0.0.0-20250407082413-67d642e29ba0
-	github.com/spacecafe/gobox/terminator v0.0.0-20250407082413-67d642e29ba0
+	github.com/spacecafe/gobox/gin-authentication v0.0.0-20250709085149-8e6d5bb0edf1
+	github.com/spacecafe/gobox/gin-ratelimit v0.0.0-20250709085149-8e6d5bb0edf1
+	github.com/spacecafe/gobox/httpserver v0.0.0-20250709085149-8e6d5bb0edf1
+	github.com/spacecafe/gobox/logger v0.0.0-20250709085149-8e6d5bb0edf1
+	github.com/spacecafe/gobox/terminator v0.0.0-20250709085149-8e6d5bb0edf1
 	github.com/spf13/viper v1.20.1
 )
 
@@ -35,7 +35,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
-	github.com/spacecafe/gobox/gin-problems v0.0.0-20250407082413-67d642e29ba0 // indirect
+	github.com/spacecafe/gobox/gin-problems v0.0.0-20250709085149-8e6d5bb0edf1 // indirect
 	github.com/spf13/afero v1.14.0 // indirect
 	github.com/spf13/cast v1.9.2 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
